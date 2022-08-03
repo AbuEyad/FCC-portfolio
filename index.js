@@ -25,6 +25,12 @@ app.get("/api/hello", function (req, res) {
   res.json({greeting: 'hello API'});
 });
 
+app.get("/api/", (req,res)=>{
+  res.json({
+    "unix" : new Date().getTime(),
+    "utc" : new Date().toUTCString()
+  })
+})
 app.get("/api/:date_string", function(req,res){
 
   let dateString = req.params.date_string;
@@ -38,7 +44,7 @@ app.get("/api/:date_string", function(req,res){
       "utc" : passedInValue.toUTCString()
     })
   }
-  
+
   // {"unix":<date.gettime()>, "utc":<date.toUTCString()>}
 
 
