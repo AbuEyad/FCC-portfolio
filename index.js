@@ -2,6 +2,7 @@
 // where your node app starts
 
 // init project
+//require('dotenv').config();
 var express = require('express');
 var app = express();
 var port = process.env.PORT || 3000;
@@ -14,6 +15,48 @@ app.use(cors({optionsSuccessStatus: 200}));  // some legacy browsers choke on 20
 // http://expressjs.com/en/starter/static-files.html
 app.use(express.static('public'));
 
+const dns = require('dns')
+const urlparser = require('url')
+const bodyParser = require('body-parser')
+const mongoose = require('mongoose');
+const mySecret = process.env['MONGO_URI']
+
+mongoose.connect("mongodb+srv://abuEyad:TImM6ozdYkigpNvc@cluster0.ctc2f.mongodb.net/fcc?retryWrites=true&w=majority", { useNewUrlParser: true, useUnifiedTopology: true });
+
+
+const schema = new mongoose.Schema({url: 'string'});
+const Url = mongoose.model('Url', schema);
+
+app.use(bodyParser.urlencoded({extended: false}))
+app.post('/api/shorturl',function(req, res){
+  console.log(req.body)
+  const bodyurl = req.body.url;
+  console.log(bodyurl);
+  const something = dns.lookup(urlparser.parse(bodyurl).hostname, (error, address)=>{
+    if(!address){
+      res.json({error: 'Invalid URL'})
+    }else {
+      let url = new Url({url:bodyurl})
+      url.save((err, data)=>{
+        res.json({
+          original_url: data.url,
+          short_url: data.id
+        })
+      })
+    }
+  })
+});
+app.get("/api/shorturl/:id", (req, res)=>{
+  const id = req.params.id;
+  Url.findById(id, (err, data)=>{
+    if(!data){
+      res.json({error: "Invalid URL"})
+    }else{
+      res.redirect(data.url)
+    }
+  })
+})
+
 // http://expressjs.com/en/starter/basic-routing.html
 app.get("/", function (req, res) {
   res.sendFile(__dirname + '/views/index.html');
@@ -24,6 +67,9 @@ app.get("/timestamp", function (req, res) {
 });
 app.get("/requestHeaderParser", function (req, res) {
   res.sendFile(__dirname + '/views/requestHeaderParser.html');
+});
+app.get("/URLShortner", function (req, res) {
+  res.sendFile(__dirname + '/views/URLShortner.html');
 });
 
 
@@ -74,6 +120,8 @@ app.get("/api/:date_string", function(req,res){
   res.json({"eroor" : "Invalid Date"})
 })
 //******************
+//URL URL Shortner
+
 
 //*****************
 // listen for requests :)
