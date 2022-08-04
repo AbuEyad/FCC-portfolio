@@ -31,13 +31,26 @@ app.get("/requestHeaderParser", function (req, res) {
 app.get("/api/hello", function (req, res) {
   res.json({greeting: 'hello API'});
 });
+// Request Header Parser App
+app.get("/api/whoami", (req, res)=>{
+  res.json({
+    "ipaddress" : req.connection.remoteAddress,
+    "language" : req.headers['accept-language'],
+    "software" : req.headers['user-agent']
 
+
+  })
+})
+//******************
+//Timestamp app
+//1- empty request
 app.get("/api/", (req,res)=>{
   res.json({
     "unix" : new Date().getTime(),
     "utc" : new Date().toUTCString()
   })
 })
+//2- other requests
 app.get("/api/:date_string", function(req,res){
 
   let dateString = req.params.date_string;
@@ -49,25 +62,20 @@ app.get("/api/:date_string", function(req,res){
         "unix": new Date(parseInt(dateString)).getTime(),
         "utc": new Date(parseInt(dateString)).toUTCString()
       })
-    }else{
+      }else{
       res.json({"error" : "Invalid Date"})
-    }
-
-  }else{
+      }
+    }else{
     res.json({
       "unix": passedInValue.getTime(),
       "utc" : passedInValue.toUTCString()
     })
-  }
-
-  // {"unix":<date.gettime()>, "utc":<date.toUTCString()>}
-
-
-
+    }
   res.json({"eroor" : "Invalid Date"})
 })
+//******************
 
-
+//*****************
 // listen for requests :)
 var listener = app.listen(port, function () {
   console.log('Your app is listening on port ' + listener.address().port);
