@@ -1,7 +1,7 @@
 {
-  "name": "useful-programmer-portfolio1",
+  "name": "fcc-portfolio-app",
   "version": "0.0.1",
-  "description": "The Useful Programmer FCC Backend Challenge",
+  "description": "FCC Backend Challenges",
   "engines": {
     "node": "16.x"
   },

@@ -1,4 +1,4 @@
-FCC - portfolio
+fcc-portfolio-app
 - Timestamp
 - Request Header parser
 - URL Shortner
